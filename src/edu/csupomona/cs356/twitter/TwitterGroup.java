@@ -1,6 +1,7 @@
 package edu.csupomona.cs356.twitter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /*
 TwitterGroups keeps track of all groups created in the groups ArrayList. Make 
@@ -9,7 +10,7 @@ it to the groups list. The default parentGroup is root. Make sure names are
 unique.
 */
 public class TwitterGroup {
-  private static ArrayList<TwitterGroup> groups;
+  private static List<TwitterGroup> groups = new ArrayList<TwitterGroup>();
   private String name;
   private TwitterGroup parentGroup;
   
@@ -23,9 +24,9 @@ public class TwitterGroup {
   
   // Return a group from the list with the given group name. Null if nothing
   // was found.
-  public static TwitterGroup getGroup(String name) {
+  public static TwitterGroup find(String name) {
     for (TwitterGroup group : groups) {
-      if (group.getName().compareTo(name) == 0) {
+      if (group.name.compareTo(name) == 0) {
         return group;
       }
     }
