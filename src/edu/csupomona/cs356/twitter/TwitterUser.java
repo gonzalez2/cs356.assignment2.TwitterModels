@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class TwitterUser {
+public class TwitterUser implements TwitterEntity{
   private static HashMap<String, TwitterUser> users = new HashMap<String, TwitterUser>();
   private String name;
   private TwitterGroup parentGroup;
@@ -23,7 +23,7 @@ public class TwitterUser {
   
   public TwitterUser(String name, TwitterGroup parentGroup) throws Exception {
     this.setName(name);
-    this.setParentGroup(parentGroup);
+    this.setParent(parentGroup);
     this.followers = new ArrayList<String>();
     this.following = new ArrayList<String>();
     users.put(name, this);
@@ -33,8 +33,12 @@ public class TwitterUser {
     return this.name;
   }
   
-  public TwitterGroup getParentGroup() {
+  public TwitterGroup getParent() {
     return this.parentGroup;
+  }
+  
+  public String toString() {
+    return this.name;
   }
   
   public void setName(String name) throws Exception {
@@ -45,7 +49,7 @@ public class TwitterUser {
     }
   }
   
-  public void setParentGroup(TwitterGroup parentGroup) {
+  public void setParent(TwitterGroup parentGroup) {
     if (parentGroup == null) {
       parentGroup = TwitterGroup.getRootGroup();
     }

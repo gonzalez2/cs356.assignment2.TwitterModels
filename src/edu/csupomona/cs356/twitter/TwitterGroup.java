@@ -9,7 +9,7 @@ sure you always have at least one root group. When you create a new group, add
 it to the groups list. The default parentGroup is root. Make sure names are
 unique.
 */
-public class TwitterGroup {
+public class TwitterGroup implements TwitterEntity{
   private static List<TwitterGroup> groups = new ArrayList<TwitterGroup>();
   private String name;
   private TwitterGroup parentGroup;
@@ -70,7 +70,7 @@ public class TwitterGroup {
     this.parentGroup = parentGroup;
   }
   
-  public TwitterGroup getParentGroup() {
+  public TwitterGroup getParent() {
     return this.parentGroup;
   }
   
