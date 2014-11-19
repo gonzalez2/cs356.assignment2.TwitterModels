@@ -9,7 +9,7 @@ public class TwitterPost implements Comparable<TwitterPost> {
   private static Integer count = 0;
   private static HashMap<String, List<TwitterPost>> posts = new HashMap<String, List<TwitterPost>>();
   private Integer id;
-  private String author_uuid;
+  private TwitterUser author;
   private String message;
 
   public static List<TwitterPost> getUserPosts(String uuid) {
@@ -30,18 +30,18 @@ public class TwitterPost implements Comparable<TwitterPost> {
     return feed;
   }
   
-  public TwitterPost(String author_uuid, String message) {
+  public TwitterPost(TwitterUser author, String message) {
     this.id = count++;
-    this.author_uuid = author_uuid;
+    this.author = author;
     this.message = message;
     List<TwitterPost> userPosts = null;
-    if (!posts.containsKey(author_uuid)) {
+    if (!posts.containsKey(author)) {
        userPosts = new ArrayList<TwitterPost>();
     } else {
-      userPosts = posts.get(author_uuid);
+      userPosts = posts.get(author);
     }
     userPosts.add(this);
-    posts.put(author_uuid, userPosts);
+    posts.put(author.getName(), userPosts);
   }
   
   public String getMessage() {
@@ -49,7 +49,12 @@ public class TwitterPost implements Comparable<TwitterPost> {
   }
   
   public TwitterUser getAuthor() {
-    return TwitterUser.find(this.author_uuid);
+    //TODO: asdfkasdfa
+    return author;
+  }
+  
+  public String toString() {
+    return this.getAuthor() + " - " + this.getMessage();
   }
   
   public int compareTo(TwitterPost comparePost) {

@@ -3,6 +3,8 @@ package edu.csupomona.cs356.twitter;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.JTree;
 import javax.swing.JButton;
 import javax.swing.JTextField;
@@ -27,8 +29,19 @@ public class AdminControl extends JFrame {
     btnAddUser.setBounds(327, 6, 117, 29);
     contentPanel.add(btnAddUser);
     
-    JTree treeGroups = new JTree();
+    JLabel lblSelectedEntity = new JLabel("");
+    lblSelectedEntity.setBounds(188, 93, 134, 16);
+    contentPanel.add(lblSelectedEntity);
+    
+    JTree treeGroups = new JTree(TwitterGroup.getRootGroup());
     treeGroups.setBounds(6, 6, 170, 266);
+    treeGroups.addTreeSelectionListener(new TreeSelectionListener() {
+      @Override
+      public void valueChanged(TreeSelectionEvent e) {
+        TwitterEntity selectedEntity = (TwitterEntity)treeGroups.getLastSelectedPathComponent();
+        lblSelectedEntity.setText(selectedEntity.toString());
+      }
+    });
     contentPanel.add(treeGroups);
     
     JButton btnAddGroup = new JButton("Add Group");
@@ -48,10 +61,6 @@ public class AdminControl extends JFrame {
     fieldAddGroup.setBounds(188, 48, 134, 28);
     contentPanel.add(fieldAddGroup);
     fieldAddGroup.setColumns(10);
-    
-    JLabel lblSelectedUser = new JLabel("");
-    lblSelectedUser.setBounds(188, 93, 134, 16);
-    contentPanel.add(lblSelectedUser);
     
     JButton btnTotalMessages = new JButton("Total Messages");
     btnTotalMessages.setBounds(188, 243, 124, 29);
