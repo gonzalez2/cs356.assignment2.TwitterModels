@@ -1,82 +1,98 @@
 package edu.csupomona.cs356.twitter.models;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
+import edu.csupomona.cs356.twitter.observer.Observer;
 import edu.csupomona.cs356.twitter.visitor.TwitterEntityVisitor;
 
+/*
+ * Parent abstract class for TwitterUser and TwitterGroup. Implement 
+ * MutableTreeNode to give us our tree functionality. Have a function which 
+ * searches this tree (bfs). Observable design pattern implemented.
+ */
 public abstract class TwitterEntity implements MutableTreeNode{
   protected String name;
   protected TwitterGroup parent;
-  protected List<TwitterEntity> children;
+  protected List<TwitterEntity> children = null;
+  private List<Observer> observers = new ArrayList<Observer>();
+
+  /*
+   * Observer functions
+   */
+  public void attach(Observer observer) {
+    this.observers.add(observer);
+  }
+  public void detach(Observer observer) {
+    this.observers.remove(observer);
+  }
+  public void notifyObservers() {
+    for (Observer observer : observers) {
+      observer.update(this);
+    }
+  }
 
   public abstract String toString();
   public abstract void accept(TwitterEntityVisitor visitor);
-
   public String getName() {
     return name;
   }
+
+  /*
+   * Breath-First Search the tree. This is a recursive function.
+   */
+  public static void bfs(TwitterEntityVisitor visitor, TwitterGroup parent) {
+    parent.accept(visitor);
+    for(TwitterEntity entity : parent.children) {
+      if (entity.getAllowsChildren()) {
+        bfs(visitor, (TwitterGroup) entity);
+      } else {
+        entity.accept(visitor);
+      }
+    }
+  }
+
+  /*
+   * Implement MutableTreeNode methods. I don't user an user object. The rest
+   *  of this is straight forward.
+   */
+  public void setUserObject(Object object) {}
   public TwitterEntity getParent() {
     return parent;
   }
-
-  @Override
   public int getIndex(TreeNode node) {
     return -1;
   }
-
-  @Override
   public void setParent(MutableTreeNode newParent) {
     this.parent = (TwitterGroup) newParent;
-    
   }
-
-  @Override
   public void removeFromParent() {
     this.parent.children.remove(this);
   }
-
-  @Override
-  public void setUserObject(Object object) {
-    // TODO Auto-generated method stub
-  }
-
-  @Override
-  public TreeNode getChildAt(int childIndex) {
-    return null;
-  }
-
-  @Override
-  public int getChildCount() {
-    return -1;
-  }
-
-  @Override
-  public boolean getAllowsChildren() {
-    return false;
-  }
-
-  @Override
   public boolean isLeaf() {
-    return true;
+    return this.children == null;
   }
-
-  @SuppressWarnings("rawtypes")
-  @Override
-  public Enumeration children() {
-    return null;
+  public TwitterEntity getChildAt(int childIndex) {
+    return this.isLeaf() ? null : this.children.get(childIndex);
   }
-
-  @Override
+  public int getChildCount() {
+    return this.getAllowsChildren() ? this.children.size() : 0;
+  }
+  public boolean getAllowsChildren() {
+    return !this.isLeaf();
+  }
+  public Enumeration<TwitterEntity> children() {
+    return this.isLeaf() ? null : java.util.Collections.enumeration(this.children);
+  }
   public void remove(int index) {
+    if (this.getAllowsChildren()) this.children.remove(index);
   }
-
-  @Override
   public void insert(MutableTreeNode child, int index) {
+    if (this.getAllowsChildren()) this.children.add(index, (TwitterGroup) child);
   }
-
-  @Override
   public void remove(MutableTreeNode node) {
+    if (this.getAllowsChildren()) this.children.remove((TwitterGroup) node);
   }
 }

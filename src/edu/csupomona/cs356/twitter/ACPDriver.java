@@ -11,14 +11,14 @@ import edu.csupomona.cs356.twitter.models.TwitterUser;
 
 public class ACPDriver {
   public static ACPDriver driver;
-  
+
   private ACPDriver() {};
-  
+
   public static ACPDriver getInstance() {
     if (driver == null) driver = new ACPDriver();
     return driver;
   }
-  
+
   public static void main(String[] args) {
     List<TwitterGroup> groups = new ArrayList<TwitterGroup>();
     List<TwitterUser> users = new ArrayList<TwitterUser>();
@@ -42,7 +42,7 @@ public class ACPDriver {
       }
     }
   }
-  
+
   private static void generateMessages(Integer num, List<TwitterUser> users) {
     for (TwitterUser user : users) {
       for (Integer i = 0; i < num; i++) {
@@ -50,7 +50,7 @@ public class ACPDriver {
       }
     }
   }
-  
+
   private static void generateFollowers(int num, List<TwitterUser> users) {
     for (TwitterUser user : users) {
       List<TwitterUser> followers = new ArrayList<TwitterUser>();
@@ -66,7 +66,7 @@ public class ACPDriver {
   private static TwitterGroup getRandomGroup(List<TwitterGroup> groups) {
     return groups.get(new Random().nextInt(groups.size()));
   }
-  
+
   private static TwitterUser getRandomUser(List<TwitterUser> users, List<TwitterUser> followers) {
     TwitterUser u;
     do {
@@ -74,7 +74,7 @@ public class ACPDriver {
     } while (followers.contains(u));
     return u;
   }
-  
+
   private static String getRandomString(Integer len) {
     String str = "";
     for (Integer i = 0; i < len; i++) {

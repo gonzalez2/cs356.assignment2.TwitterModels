@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import edu.csupomona.cs356.twitter.models.TwitterEntity;
 import edu.csupomona.cs356.twitter.models.TwitterGroup;
 import edu.csupomona.cs356.twitter.models.TwitterUser;
+import edu.csupomona.cs356.twitter.visitor.CountVisitor;
 
 public class AdminControl extends JFrame implements ActionListener{
 
@@ -27,6 +28,7 @@ public class AdminControl extends JFrame implements ActionListener{
   private JTextField fieldAddGroup;
   private TwitterEntity selectedEntity;
   private JTree treeGroups;
+  private JLabel lblStats;
 
   public AdminControl() {
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,29 +76,11 @@ public class AdminControl extends JFrame implements ActionListener{
     contentPanel.add(fieldAddGroup);
     fieldAddGroup.setColumns(10);
     
-    JButton btnTotalMessages = new JButton("Total Messages");
-    btnTotalMessages.setBounds(188, 243, 124, 29);
-    btnTotalMessages.setActionCommand("tot_messages");
-    btnTotalMessages.addActionListener(this);
-    contentPanel.add(btnTotalMessages);
-    
-    JButton btnTotalUsers = new JButton("Total Users");
-    btnTotalUsers.setBounds(188, 202, 124, 29);
-    btnTotalUsers.setActionCommand("tot_users");
-    btnTotalUsers.addActionListener(this);
-    contentPanel.add(btnTotalUsers);
-    
-    JButton btnPercentPositive = new JButton("Percent Positive");
-    btnPercentPositive.setBounds(310, 243, 134, 29);
-    btnPercentPositive.setActionCommand("percent_positive");
-    btnPercentPositive.addActionListener(this);
-    contentPanel.add(btnPercentPositive);
-    
-    JButton btnTotalGroups = new JButton("Total Groups");
-    btnTotalGroups.setBounds(310, 202, 134, 29);
-    btnTotalGroups.setActionCommand("tot_groups");
-    btnTotalGroups.addActionListener(this);
-    contentPanel.add(btnTotalGroups);
+    JButton btnStats = new JButton("Show Statistics");
+    btnStats.setBounds(188, 243, 256, 29);
+    btnStats.setActionCommand("stats");
+    btnStats.addActionListener(this);
+    contentPanel.add(btnStats);
     
     treeGroups = new JTree(new DefaultTreeModel(TwitterGroup.getRootGroup()));
     treeGroups.addTreeSelectionListener(new TreeSelectionListener() {
@@ -132,6 +116,10 @@ public class AdminControl extends JFrame implements ActionListener{
     treeScroll.setBounds(6, 6, 170, 266);
     treeScroll.setViewportView(treeGroups);
     contentPanel.add(treeScroll);
+    
+    lblStats = new JLabel("");
+    lblStats.setBounds(188, 121, 256, 112);
+    contentPanel.add(lblStats);
   }
 
   @Override
@@ -159,14 +147,15 @@ public class AdminControl extends JFrame implements ActionListener{
         err.printStackTrace();
       }
       break;
-    case "tot_users":
-      
-      break;
-    case "tot_groups":
-      break;
-    case "tot_messages":
-      break;
-    case "percent_positive":
+    case "stats":
+      String stats = "<html>Statistics<br />";
+      CountVisitor visitor = new CountVisitor();
+      TwitterEntity.bfs(visitor, TwitterGroup.getRootGroup());
+      stats += "Total Groups: "+visitor.getGroups()+"<br />";
+      stats += "Total Users: "+visitor.getUsers()+"<br />";
+      stats += "Total Posts: "+visitor.getPosts()+"<br />";
+      stats += "Percent of Positive Posts : "+visitor.getPercentPositivePosts()+"<br />";
+      lblStats.setText(stats);
       break;
     default:
       break;

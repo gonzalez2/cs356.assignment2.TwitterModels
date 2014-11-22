@@ -1,10 +1,6 @@
 package edu.csupomona.cs356.twitter.models;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
-
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeNode;
 
 import edu.csupomona.cs356.twitter.visitor.TwitterEntityVisitor;
 
@@ -46,47 +42,5 @@ public class TwitterGroup extends TwitterEntity {
 
   public void accept(TwitterEntityVisitor visitor) {
     visitor.visitTwitterGroup(this);
-  }
-
-  @Override
-  public TreeNode getChildAt(int childIndex) {
-    return children.get(childIndex);
-  }
-
-  @Override
-  public int getChildCount() {
-    return children.size();
-  }
-
-  @Override
-  public boolean getAllowsChildren() {
-    return true;
-  }
-
-  @Override
-  public boolean isLeaf() {
-    return false;
-  }
-
-  @SuppressWarnings("rawtypes")
-  @Override
-  public Enumeration children() {
-    return java.util.Collections.enumeration(this.children);
-  }
-
-  @Override
-  public void remove(int index) {
-    this.children.remove(index);
-  }
-
-  @Override
-  public void insert(MutableTreeNode child, int index) {
-    this.children.add(index, (TwitterGroup) child);
-  }
-
-  @Override
-  public void remove(MutableTreeNode node) {
-    this.children.remove((TwitterGroup) node);
-    
   }
 }

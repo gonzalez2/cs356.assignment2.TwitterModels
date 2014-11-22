@@ -84,6 +84,7 @@ public class AdminUser extends JFrame implements ActionListener {
       this.user.follow(TwitterUser.findUser(fieldFollowUser.getText(), TwitterGroup.getRootGroup()));
       fieldFollowUser.setText("");
       listFollowing.setListData(this.user.getFollowing());
+      listNewsFeed.setListData(this.user.getFeed());
       break;
     case "post_message":
       this.user.post(fieldNewMessage.getText());

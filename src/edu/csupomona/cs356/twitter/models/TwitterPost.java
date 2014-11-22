@@ -29,6 +29,7 @@ public class TwitterPost implements Comparable<TwitterPost> {
       feed.addAll(userPosts);
     }
     Collections.sort(feed);
+    Collections.reverse(feed);
     return feed;
   }
   
@@ -48,6 +49,10 @@ public class TwitterPost implements Comparable<TwitterPost> {
   
   public String toString() {
     return this.author.getName() + " - " + this.message;
+  }
+  
+  public boolean hasPositiveMessage() {
+    return this.message.indexOf('z') >= 0;
   }
   
   public int compareTo(TwitterPost comparePost) {
