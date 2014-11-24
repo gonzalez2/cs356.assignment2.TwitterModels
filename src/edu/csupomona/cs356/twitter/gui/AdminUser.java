@@ -1,8 +1,5 @@
 package edu.csupomona.cs356.twitter.gui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -12,10 +9,13 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JLabel;
 
-import edu.csupomona.cs356.twitter.models.TwitterGroup;
+import edu.csupomona.cs356.twitter.command.FollowCommand;
+import edu.csupomona.cs356.twitter.command.PostMessageCommand;
 import edu.csupomona.cs356.twitter.models.TwitterUser;
+import edu.csupomona.cs356.twitter.observer.TwitterObserver;
+import edu.csupomona.cs356.twitter.observer.UserObserver;
 
-public class AdminUser extends JFrame implements ActionListener {
+public class AdminUser extends JFrame {
 
   private static final long serialVersionUID = 3315711711061548224L;
   private TwitterUser user;
@@ -24,6 +24,12 @@ public class AdminUser extends JFrame implements ActionListener {
   private JTextField fieldNewMessage;
   private JList<String> listFollowing;
   private JList<String> listNewsFeed;
+  private JButton btnFollowUser;
+  private JButton btnNewMessage;
+  private JLabel lblNewsFeed;
+  private JLabel lblFollowing;
+  private JScrollPane scrollNewsFeed;
+  private TwitterObserver observer;
 
   public AdminUser(TwitterUser user) {
     this.user = user;
@@ -39,10 +45,9 @@ public class AdminUser extends JFrame implements ActionListener {
     userPanel.add(fieldFollowUser);
     fieldFollowUser.setColumns(10);
     
-    JButton btnFollowUser = new JButton("Follow");
+    btnFollowUser = new JButton("Follow");
     btnFollowUser.setBounds(222, 6, 72, 29);
-    btnFollowUser.setActionCommand("follow");
-    btnFollowUser.addActionListener(this);
+    btnFollowUser.addActionListener(new FollowCommand(this));
     userPanel.add(btnFollowUser);
     
     listFollowing = new JList<String>(this.user.getFollowing());
@@ -56,43 +61,42 @@ public class AdminUser extends JFrame implements ActionListener {
     userPanel.add(fieldNewMessage);
     fieldNewMessage.setColumns(10);
     
-    JButton btnNewMessage = new JButton("Post");
+    btnNewMessage = new JButton("Post");
     btnNewMessage.setBounds(222, 162, 72, 29);
-    btnNewMessage.setActionCommand("post_message");
-    btnNewMessage.addActionListener(this);
+    btnNewMessage.addActionListener(new PostMessageCommand(this));
     userPanel.add(btnNewMessage);
     
     listNewsFeed = new JList<String>(this.user.getFeed());
-    JScrollPane scrollNewsFeed = new JScrollPane();
+    scrollNewsFeed = new JScrollPane();
     scrollNewsFeed.setBounds(6, 212, 288, 110);
     scrollNewsFeed.setViewportView(listNewsFeed);
     userPanel.add(scrollNewsFeed);
     
-    JLabel lblNewsFeed = new JLabel("News Feed");
+    lblNewsFeed = new JLabel("News Feed");
     lblNewsFeed.setBounds(6, 192, 288, 16);
     userPanel.add(lblNewsFeed);
     
-    JLabel lblFollowing = new JLabel("Following");
+    lblFollowing = new JLabel("Following");
     lblFollowing.setBounds(6, 34, 288, 16);
     userPanel.add(lblFollowing);
+    
+    observer = new UserObserver(listFollowing, listNewsFeed, user);
+    this.user.attachUser(observer);
   }
 
-  @Override
-  public void actionPerformed(ActionEvent e) {
-    switch(e.getActionCommand()) {
-    case "follow":
-      this.user.follow(TwitterUser.findUser(fieldFollowUser.getText(), TwitterGroup.getRootGroup()));
-      fieldFollowUser.setText("");
-      listFollowing.setListData(this.user.getFollowing());
-      listNewsFeed.setListData(this.user.getFeed());
-      break;
-    case "post_message":
-      this.user.post(fieldNewMessage.getText());
-      fieldNewMessage.setText("");
-      listNewsFeed.setListData(this.user.getFeed());
-      break;
-    default:
-      break;
-    }
+  public TwitterUser getUser() {
+    return this.user;
+  }
+
+  public TwitterObserver getObserver() {
+    return this.observer;
+  }
+
+  public JTextField getFieldFollowUser() {
+    return this.fieldFollowUser;
+  }
+
+  public JTextField getFieldNewMessage() {
+    return this.fieldNewMessage;
   }
 }

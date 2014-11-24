@@ -6,6 +6,10 @@ import edu.csupomona.cs356.twitter.models.TwitterGroup;
 import edu.csupomona.cs356.twitter.models.TwitterPost;
 import edu.csupomona.cs356.twitter.models.TwitterUser;
 
+/*
+ * Using just one visitor. If I'm doing a BFS on the tree to visit and count
+ * each element, I only want to do it once...
+ */
 public class CountVisitor implements TwitterEntityVisitor {
   private Integer users = 0;
   private Integer groups = 0;

@@ -5,7 +5,7 @@ import java.util.Enumeration;
 import java.util.List;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
-import edu.csupomona.cs356.twitter.observer.Observer;
+import edu.csupomona.cs356.twitter.observer.TwitterObserver;
 import edu.csupomona.cs356.twitter.visitor.TwitterEntityVisitor;
 
 /*
@@ -13,31 +13,49 @@ import edu.csupomona.cs356.twitter.visitor.TwitterEntityVisitor;
  * MutableTreeNode to give us our tree functionality. Have a function which 
  * searches this tree (bfs). Observable design pattern implemented.
  */
-public abstract class TwitterEntity implements MutableTreeNode{
+public abstract class TwitterEntity implements MutableTreeNode, Comparable<TwitterEntity>{
   protected String name;
   protected TwitterGroup parent;
   protected List<TwitterEntity> children = null;
-  private List<Observer> observers = new ArrayList<Observer>();
+  private List<TwitterObserver> observers = new ArrayList<TwitterObserver>();
 
   /*
    * Observer functions
    */
-  public void attach(Observer observer) {
+  public void attach(TwitterObserver observer) {
     this.observers.add(observer);
   }
-  public void detach(Observer observer) {
+  public void detach(TwitterObserver observer) {
     this.observers.remove(observer);
   }
   public void notifyObservers() {
-    for (Observer observer : observers) {
+    for (TwitterObserver observer : observers) {
       observer.update(this);
     }
   }
 
-  public abstract String toString();
+  /*
+   * Abstract functions
+   */
   public abstract void accept(TwitterEntityVisitor visitor);
+  public String toString() {
+    return this.name;
+  }
   public String getName() {
-    return name;
+    return this.name;
+  }
+
+  public int compareTo(TwitterEntity b) {
+    if ((b instanceof TwitterUser && this instanceof TwitterUser)
+     || (b instanceof TwitterGroup && this instanceof TwitterGroup)) {
+      return this.name.compareTo(b.name);
+    } else {
+      if (this instanceof TwitterGroup) {
+        return 1;
+      } else {
+        return -1;
+      }
+    }
   }
 
   /*
