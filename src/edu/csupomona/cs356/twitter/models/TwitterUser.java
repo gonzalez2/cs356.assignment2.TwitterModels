@@ -1,6 +1,7 @@
 package edu.csupomona.cs356.twitter.models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +14,8 @@ import edu.csupomona.cs356.twitter.visitor.InvalidNameVisitor;
  * Following is a set so the list can be unique.
  */
 public class TwitterUser extends TwitterEntity{
-  private Set<TwitterUser> following;
+  private Set<TwitterUser> following = new HashSet<TwitterUser>();
+  private List<TwitterPost> posts = new ArrayList<TwitterPost>();
 
   /*
    * Try to create a new TwitterUser, if the name is a duplicate throw an
@@ -31,7 +33,6 @@ public class TwitterUser extends TwitterEntity{
     }
     this.name = name;
     this.parent = parentGroup;
-    this.following = new HashSet<TwitterUser>();
     this.parent.children.add(this);
     TwitterGroup.getRootGroup().notifyObservers();
   }
@@ -58,8 +59,30 @@ public class TwitterUser extends TwitterEntity{
    * Create a new TwitterPost. Notify any attached observers.
    */
   public void post(String message) {
-    new TwitterPost(this, message);
+    posts.add(new TwitterPost(message));
     this.notifyObservers();
+  }
+
+  /*
+   * Return all posts of a given author.
+   */
+  public List<TwitterPost> getPosts() {
+    return this.posts;
+  }
+
+  /*
+   * Return all posts that would be in the user's feed (anyone they are
+   * following and themselves). Sort the posts so the newest is at the top.
+   */
+  private List<TwitterPost> getFeedList() {
+    List<TwitterPost> feed = new ArrayList<TwitterPost>();
+    feed.addAll(this.getPosts());
+    for (TwitterUser user : this.following) {
+      feed.addAll(user.getPosts());
+    }
+    Collections.sort(feed);
+    Collections.reverse(feed);
+    return feed;
   }
 
   /*
@@ -79,9 +102,9 @@ public class TwitterUser extends TwitterEntity{
    */
   public String[] getFeed() {
     List<String> myFeed = new ArrayList<String>();
-    List<TwitterPost> posts = TwitterPost.getUserFeed(this);
+    List<TwitterPost> posts = this.getFeedList();
     for (TwitterPost post : posts) {
-      myFeed.add(post.toString());
+      myFeed.add(this.toString()+": "+post.toString());
     }
     return myFeed.toArray(new String[myFeed.size()]);
   }

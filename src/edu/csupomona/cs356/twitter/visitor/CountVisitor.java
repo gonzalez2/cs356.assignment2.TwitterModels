@@ -39,7 +39,7 @@ public class CountVisitor implements TwitterEntityVisitor {
   @Override
   public void visitTwitterUser(TwitterUser user) {
     this.users += 1;
-    List<TwitterPost> posts = TwitterPost.getUserPosts(user.getName());
+    List<TwitterPost> posts = user.getPosts();
     for (TwitterPost post : posts) {
       this.posts += 1;
       if (post.hasPositiveMessage()) this.positive_posts += 1;
