@@ -29,11 +29,13 @@ public class AdminUser extends JFrame {
   private JLabel lblNewsFeed;
   private JLabel lblFollowing;
   private JScrollPane scrollNewsFeed;
+  private JLabel lblUpdatedAt;
+  private JLabel lblCreatedAt;
   private TwitterObserver observer;
 
   public AdminUser(TwitterUser user) {
     this.user = user;
-    setBounds(100, 100, 300, 350);
+    setBounds(100, 100, 300, 400);
     setTitle(this.user.toString());
     userPanel = new JPanel();
     userPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -80,7 +82,15 @@ public class AdminUser extends JFrame {
     lblFollowing.setBounds(6, 34, 288, 16);
     userPanel.add(lblFollowing);
     
-    observer = new UserObserver(listFollowing, listNewsFeed, user);
+    lblCreatedAt = new JLabel("Created at: "+this.user.getCreatedAt());
+    lblCreatedAt.setBounds(6, 331, 288, 16);
+    userPanel.add(lblCreatedAt);
+    
+    lblUpdatedAt = new JLabel("Updated at: "+this.user.getUpdatedAt());
+    lblUpdatedAt.setBounds(6, 359, 288, 16);
+    userPanel.add(lblUpdatedAt);
+    
+    observer = new UserObserver(listFollowing, listNewsFeed, lblUpdatedAt, user);
     this.user.attachUser(observer);
   }
 

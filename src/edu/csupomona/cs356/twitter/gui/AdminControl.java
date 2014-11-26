@@ -35,9 +35,11 @@ public class AdminControl extends JFrame implements TreeSelectionListener{
   private JButton btnAddGroup;
   private JButton btnViewUser;
   private JButton btnStats;
+  private JButton btnValidateIDs;
+  private JButton btnRecentUser;
   private JLabel lblSelectedEntity;
   private JScrollPane treeScroll;
-  private JLabel lblStats;
+  private JLabel lblMessage;
   private JTree treeGroups;
   private JTextField fieldAddUser;
   private JTextField fieldAddGroup;
@@ -45,7 +47,7 @@ public class AdminControl extends JFrame implements TreeSelectionListener{
 
   private AdminControl() {
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setBounds(100, 100, 450, 300);
+    setBounds(100, 100, 450, 341);
     setTitle("Admin Control Panel");
 
     contentPanel = new JPanel();
@@ -82,14 +84,24 @@ public class AdminControl extends JFrame implements TreeSelectionListener{
     btnViewUser.setBounds(327, 88, 117, 29);
     btnViewUser.addActionListener(new ViewUserCommand());
     contentPanel.add(btnViewUser);
+    
+    btnValidateIDs = new JButton("Validate IDs");
+    btnValidateIDs.setBounds(188, 284, 117, 29);
+    btnValidateIDs.addActionListener(new ValidateIDsCommand());
+    contentPanel.add(btnValidateIDs);
+    
+    btnRecentUser = new JButton("Recent User");
+    btnRecentUser.setBounds(327, 284, 117, 29);
+    btnRecentUser.addActionListener(new RecentUserCommand());
+    contentPanel.add(btnRecentUser);
 
     lblSelectedEntity = new JLabel("");
     lblSelectedEntity.setBounds(188, 93, 134, 16);
     contentPanel.add(lblSelectedEntity);
 
-    lblStats = new JLabel("");
-    lblStats.setBounds(188, 121, 256, 112);
-    contentPanel.add(lblStats);
+    lblMessage = new JLabel("");
+    lblMessage.setBounds(188, 121, 256, 112);
+    contentPanel.add(lblMessage);
 
     btnStats = new JButton("Show Statistics");
     btnStats.setBounds(188, 243, 256, 29);
@@ -99,7 +111,7 @@ public class AdminControl extends JFrame implements TreeSelectionListener{
     treeGroups = new JTree(new DefaultTreeModel(TwitterGroup.getRootGroup()));
     treeGroups.addTreeSelectionListener(this);
     treeScroll = new JScrollPane();
-    treeScroll.setBounds(6, 6, 170, 266);
+    treeScroll.setBounds(6, 6, 170, 307);
     treeScroll.setViewportView(treeGroups);
     contentPanel.add(treeScroll);
 
@@ -138,8 +150,8 @@ public class AdminControl extends JFrame implements TreeSelectionListener{
     }
   }
 
-  public JLabel getLblStats() {
-    return lblStats;
+  public JLabel getLblMessage() {
+    return lblMessage;
   }
 
   public JTree getTreeGroups() {

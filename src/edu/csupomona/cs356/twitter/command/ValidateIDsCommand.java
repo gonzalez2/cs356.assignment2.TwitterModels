@@ -8,7 +8,7 @@ import edu.csupomona.cs356.twitter.models.TwitterEntity;
 import edu.csupomona.cs356.twitter.models.TwitterGroup;
 import edu.csupomona.cs356.twitter.visitor.CountVisitor;
 
-public class StatsCommand implements ActionListener {
+public class ValidateIDsCommand implements ActionListener {
 
   @Override
   public void actionPerformed(ActionEvent e) {

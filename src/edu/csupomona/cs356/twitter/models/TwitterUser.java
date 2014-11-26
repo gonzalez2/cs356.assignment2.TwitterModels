@@ -21,6 +21,8 @@ public class TwitterUser extends TwitterEntity{
   public TwitterUser(String name, TwitterGroup parentGroup) throws Exception {
     if (TwitterUser.findUser(name, TwitterGroup.getRootGroup()) != null) {
       throw new Exception("User already exists.");
+    } else if (name.indexOf(' ') >= 0) {
+      throw new Exception("User names cannot contain spaces.");
     }
     this.name = name;
     this.parent = parentGroup;
@@ -104,5 +106,30 @@ public class TwitterUser extends TwitterEntity{
       }
     }
     return null;
+  }
+
+  /*
+   * BFS through the tree to find a user of a given `name`(string)
+   */
+  public static TwitterUser findRecentUser(long time, TwitterGroup parent) {
+    TwitterUser recent = null;
+    List<TwitterGroup> localGroups = new ArrayList<TwitterGroup>();
+    for (TwitterEntity entity : parent.children) {
+      if (entity.isLeaf()) {
+        if (entity.getUpdatedAt() > time) {
+          time = entity.getUpdatedAt();
+          recent = (TwitterUser) entity;
+        }
+      } else {
+        localGroups.add((TwitterGroup) entity);
+      }
+    }
+    for (TwitterGroup group : localGroups) {
+      TwitterUser remoteRecent = findRecentUser(time, group);
+      if (remoteRecent != null && remoteRecent.getCreatedAt() > recent.getCreatedAt()) {
+        recent = remoteRecent;
+      }
+    }
+    return recent;
   }
 }

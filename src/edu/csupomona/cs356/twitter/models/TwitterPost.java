@@ -24,7 +24,6 @@ public class TwitterPost implements Comparable<TwitterPost> {
     if (posts.containsKey(author)) {
       return posts.get(author);
     } else {
-      System.out.println("author not found: "+author);
       return new ArrayList<TwitterPost>();
     }
   }

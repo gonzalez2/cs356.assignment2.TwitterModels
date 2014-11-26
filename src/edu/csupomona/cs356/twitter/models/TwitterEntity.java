@@ -17,6 +17,8 @@ public abstract class TwitterEntity implements MutableTreeNode, Comparable<Twitt
   protected String name;
   protected TwitterGroup parent;
   protected List<TwitterEntity> children = null;
+  protected long createdAt = System.currentTimeMillis();
+  protected long updatedAt = System.currentTimeMillis();
   private List<TwitterObserver> observers = new ArrayList<TwitterObserver>();
 
   /*
@@ -43,6 +45,15 @@ public abstract class TwitterEntity implements MutableTreeNode, Comparable<Twitt
   }
   public String getName() {
     return this.name;
+  }
+  public long getCreatedAt() {
+    return this.createdAt;
+  }
+  public long getUpdatedAt() {
+    return this.updatedAt;
+  }
+  public void touch() {
+    this.updatedAt = System.currentTimeMillis();
   }
 
   public int compareTo(TwitterEntity b) {

@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 import edu.csupomona.cs356.twitter.gui.AdminControl;
 import edu.csupomona.cs356.twitter.models.TwitterGroup;
 import edu.csupomona.cs356.twitter.models.TwitterUser;
@@ -30,9 +31,13 @@ public class ACPDriver {
     List<TwitterGroup> groups = new ArrayList<TwitterGroup>();
     List<TwitterUser> users = new ArrayList<TwitterUser>();
     groups.add(TwitterGroup.getRootGroup());
-    groups.add(new TwitterGroup("group1", groups.get(0)));
-    groups.add(new TwitterGroup("group2", groups.get(1)));
-    groups.add(new TwitterGroup("group3", groups.get(2)));
+    try {
+      groups.add(new TwitterGroup("group1", groups.get(0)));
+      groups.add(new TwitterGroup("group2", groups.get(1)));
+      groups.add(new TwitterGroup("group3", groups.get(2)));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     generateUsers(25, users, groups);
     generateMessages(5, users);
     generateFollowers(5, users);

@@ -1,6 +1,7 @@
 package edu.csupomona.cs356.twitter.models;
 
 import java.util.ArrayList;
+
 import edu.csupomona.cs356.twitter.visitor.TwitterEntityVisitor;
 
 /*
@@ -29,7 +30,12 @@ public class TwitterGroup extends TwitterEntity {
    * private variables, if the name is not unique throw an exception. Add
    * this new group to the groups list.
    */
-  public TwitterGroup(String name, TwitterGroup parentGroup) {
+  public TwitterGroup(String name, TwitterGroup parentGroup) throws Exception {
+    if (TwitterGroup.findGroup(name, TwitterGroup.getRootGroup()) != null) {
+      throw new Exception("Group already exists.");
+    } else if (name.indexOf(' ') >= 0) {
+      throw new Exception("Group names cannot contain spaces.");
+    }
     this.parent = parentGroup;
     this.name = name;
     this.children = new ArrayList<TwitterEntity>();
@@ -40,5 +46,19 @@ public class TwitterGroup extends TwitterEntity {
   // Accept the visitor.
   public void accept(TwitterEntityVisitor visitor) {
     visitor.visitTwitterGroup(this);
+  }
+
+  /*
+   * BFS through the tree to find a user of a given `name`(string)
+   */
+  public static TwitterGroup findGroup(String name, TwitterGroup parent) {
+    for(TwitterEntity entity : parent.children) {
+      if (!entity.isLeaf()) {
+        if (entity.getName().compareTo(name) == 0) return (TwitterGroup) entity;
+        TwitterGroup rec = findGroup(name, (TwitterGroup) entity);
+        if (rec != null) return rec;
+      }
+    }
+    return null;
   }
 }
