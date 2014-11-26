@@ -13,7 +13,8 @@ import java.util.List;
 public class TwitterPost implements Comparable<TwitterPost> {
   private static Integer count = 0;
   private static HashMap<String, List<TwitterPost>> posts = new HashMap<String, List<TwitterPost>>();
-  private Integer id;
+  private long createdAt = System.currentTimeMillis();
+  private Integer id = ++count;
   private TwitterUser author;
   private String message;
 
@@ -49,7 +50,6 @@ public class TwitterPost implements Comparable<TwitterPost> {
    * is uninitialized for the author initialize it. Add the post to the hash.
    */
   public TwitterPost(TwitterUser author, String message) {
-    this.id = count++;
     this.author = author;
     this.message = message;
     List<TwitterPost> userPosts = null;

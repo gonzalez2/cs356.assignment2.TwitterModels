@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import edu.csupomona.cs356.twitter.observer.TwitterObserver;
 import edu.csupomona.cs356.twitter.visitor.TwitterEntityVisitor;
+import edu.csupomona.cs356.twitter.visitor.InvalidNameVisitor;
 
 /*
  * Following is a set so the list can be unique.
@@ -19,10 +21,13 @@ public class TwitterUser extends TwitterEntity{
    * observers of the addition.
    */
   public TwitterUser(String name, TwitterGroup parentGroup) throws Exception {
-    if (TwitterUser.findUser(name, TwitterGroup.getRootGroup()) != null) {
-      throw new Exception("User already exists.");
-    } else if (name.indexOf(' ') >= 0) {
+    if (name.indexOf(' ') >= 0) {
       throw new Exception("User names cannot contain spaces.");
+    }
+    InvalidNameVisitor visitor = new InvalidNameVisitor();
+    TwitterEntity.bfs(visitor, TwitterGroup.getRootGroup());
+    if (visitor.checkInvalidUser(name)) {
+      throw new Exception("User already exists.");
     }
     this.name = name;
     this.parent = parentGroup;
@@ -94,7 +99,9 @@ public class TwitterUser extends TwitterEntity{
   }
 
   /*
-   * BFS through the tree to find a user of a given `name`(string)
+   * BFS through the tree to find a user of a given `name`(string). Not making
+   * this a visitor to keep the lookup time as low as possible since we can
+   * return when we find the user, no need to search the entire tree first.
    */
   public static TwitterUser findUser(String name, TwitterGroup parent) {
     for(TwitterEntity entity : parent.children) {
@@ -106,30 +113,5 @@ public class TwitterUser extends TwitterEntity{
       }
     }
     return null;
-  }
-
-  /*
-   * BFS through the tree to find a user of a given `name`(string)
-   */
-  public static TwitterUser findRecentUser(long time, TwitterGroup parent) {
-    TwitterUser recent = null;
-    List<TwitterGroup> localGroups = new ArrayList<TwitterGroup>();
-    for (TwitterEntity entity : parent.children) {
-      if (entity.isLeaf()) {
-        if (entity.getUpdatedAt() > time) {
-          time = entity.getUpdatedAt();
-          recent = (TwitterUser) entity;
-        }
-      } else {
-        localGroups.add((TwitterGroup) entity);
-      }
-    }
-    for (TwitterGroup group : localGroups) {
-      TwitterUser remoteRecent = findRecentUser(time, group);
-      if (remoteRecent != null && remoteRecent.getCreatedAt() > recent.getCreatedAt()) {
-        recent = remoteRecent;
-      }
-    }
-    return recent;
   }
 }
