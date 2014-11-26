@@ -6,19 +6,14 @@ import java.awt.event.ActionListener;
 import edu.csupomona.cs356.twitter.gui.AdminControl;
 import edu.csupomona.cs356.twitter.models.TwitterEntity;
 import edu.csupomona.cs356.twitter.models.TwitterGroup;
-import edu.csupomona.cs356.twitter.visitor.CountVisitor;
+import edu.csupomona.cs356.twitter.visitor.UniqueNameVisitor;
 
 public class ValidateIDsCommand implements ActionListener {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    String stats = "<html>Statistics<br />";
-    CountVisitor visitor = new CountVisitor();
+    UniqueNameVisitor visitor = new UniqueNameVisitor();
     TwitterEntity.bfs(visitor, TwitterGroup.getRootGroup());
-    stats += "Total Groups: "+visitor.getGroups()+"<br />";
-    stats += "Total Users: "+visitor.getUsers()+"<br />";
-    stats += "Total Posts: "+visitor.getPosts()+"<br />";
-    stats += "Percent of Positive Posts : "+visitor.getPercentPositivePosts()+"<br />";
-    AdminControl.getInstance().getLblMessage().setText(stats);
+    AdminControl.getInstance().getLblMessage().setText("<html>Array of invalid IDs:<br />"+visitor.getInvalid().toString());
   }
 }
