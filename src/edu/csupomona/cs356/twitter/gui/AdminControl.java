@@ -34,7 +34,7 @@ public class AdminControl extends JFrame implements TreeSelectionListener{
   private JButton btnAddUser;
   private JButton btnAddGroup;
   private JButton btnViewUser;
-  private JButton btnStats;
+  private JButton btnTotalPosts;
   private JButton btnValidateIDs;
   private JButton btnRecentUser;
   private JLabel lblSelectedEntity;
@@ -44,6 +44,9 @@ public class AdminControl extends JFrame implements TreeSelectionListener{
   private JTextField fieldAddUser;
   private JTextField fieldAddGroup;
   private TwitterEntity selectedEntity;
+  private JButton btnPositivePosts;
+  private JButton btnTotalGroups;
+  private JButton btnTotalUsers;
 
   private AdminControl() {
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -84,14 +87,34 @@ public class AdminControl extends JFrame implements TreeSelectionListener{
     btnViewUser.setBounds(327, 88, 117, 29);
     btnViewUser.addActionListener(new ViewUserCommand());
     contentPanel.add(btnViewUser);
-    
+
+    btnPositivePosts = new JButton("Positive Posts");
+    btnPositivePosts.setBounds(314, 243, 130, 29);
+    btnPositivePosts.addActionListener(new PositivePostsCommand());
+    contentPanel.add(btnPositivePosts);
+
+    btnTotalGroups = new JButton("Total Groups");
+    btnTotalGroups.setBounds(314, 202, 130, 29);
+    btnTotalGroups.addActionListener(new TotalGroupsCommand());
+    contentPanel.add(btnTotalGroups);
+
+    btnTotalUsers = new JButton("Total Users");
+    btnTotalUsers.setBounds(188, 202, 130, 29);
+    btnTotalUsers.addActionListener(new TotalUsersCommand());
+    contentPanel.add(btnTotalUsers);
+
+    btnTotalPosts = new JButton("Total Posts");
+    btnTotalPosts.setBounds(188, 243, 130, 29);
+    btnTotalPosts.addActionListener(new TotalPostsCommand());
+    contentPanel.add(btnTotalPosts);
+
     btnValidateIDs = new JButton("Validate IDs");
-    btnValidateIDs.setBounds(188, 284, 117, 29);
+    btnValidateIDs.setBounds(188, 284, 130, 29);
     btnValidateIDs.addActionListener(new ValidateIDsCommand());
     contentPanel.add(btnValidateIDs);
-    
+
     btnRecentUser = new JButton("Recent User");
-    btnRecentUser.setBounds(327, 284, 117, 29);
+    btnRecentUser.setBounds(314, 284, 130, 29);
     btnRecentUser.addActionListener(new RecentUserCommand());
     contentPanel.add(btnRecentUser);
 
@@ -100,13 +123,8 @@ public class AdminControl extends JFrame implements TreeSelectionListener{
     contentPanel.add(lblSelectedEntity);
 
     lblMessage = new JLabel("");
-    lblMessage.setBounds(188, 121, 256, 112);
+    lblMessage.setBounds(188, 129, 256, 61);
     contentPanel.add(lblMessage);
-
-    btnStats = new JButton("Show Statistics");
-    btnStats.setBounds(188, 243, 256, 29);
-    btnStats.addActionListener(new StatsCommand());
-    contentPanel.add(btnStats);
 
     treeGroups = new JTree(new DefaultTreeModel(TwitterGroup.getRootGroup()));
     treeGroups.addTreeSelectionListener(this);
